@@ -50,8 +50,8 @@ class ItemCollectionResource extends ResourceCollection
                     'price' => $data->price,
                     'isDisabled' => $data->isDisabled,
                     'blah' => 'foo',
-                    // 'created_at' => $data->created_at ? $data->created_at->toDateTimeString() : null,
-                    // 'updated_at' => $data->updated_at ? $data->updated_at->toDateTimeString() : null,
+                     'created_at' => $data->created_at ? $data->created_at->toDateTimeString() : null,
+                     'updated_at' => $data->updated_at ? $data->updated_at->toDateTimeString() : null,
                 ];
             }),
             'meta' => $meta,

@@ -45,8 +45,10 @@ class ItemReviewCollectionResource extends ResourceCollection
             'items' => $this->collection->transform(function ($data) {
                 return [
                     'id' => $data->id,
-                    // 'created_at' => $data->created_at ? $data->created_at->toDateTimeString() : null,
-                    // 'updated_at' => $data->updated_at ? $data->updated_at->toDateTimeString() : null,
+                    'content' => $data->content,
+                    'stars' => $data->stars,
+                     'created_at' => $data->created_at ? $data->created_at->toDateTimeString() : null,
+                     'updated_at' => $data->updated_at ? $data->updated_at->toDateTimeString() : null,
                 ];
             }),
             'meta' => $meta,

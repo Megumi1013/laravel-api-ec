@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ItemResource;
 use App\Http\Resources\ItemReviewCollectionResource;
+use App\Http\Resources\ItemReviewResource;
 use App\Models\Item;
 use App\Models\ItemReview;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class ItemReviewController extends Controller
      */
     public function index($itemId)
     {
-        $item = Item::find($itemId)->with('reviews');
+        $item = Item::query()->find($itemId);
 
         if ($item) {
 
@@ -35,9 +36,9 @@ class ItemReviewController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(Request $request, $itemId)
     {
         $data = $request->all();
 
@@ -52,16 +53,15 @@ class ItemReviewController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $review  = new ItemReview;
+        $itemReview = new ItemReview();
 
-        $review->name = $data['name'];
-        $review->description = $data['description'];
-        $review->price = $data['price'];
-        $review->is_disabled = $data['is_disabled'];
+        $itemReview->content = $data['content'];
+        $itemReview->stars = $data['stars'];
+        $itemReview->item_id = $itemId;
 
-        if ($review->save()) {
+        if ($itemReview->save()) {
 
-            $data = new ItemReviewCollectionResource($review);
+            $data = new ItemReviewResource($itemReview);
             return $this->createSuccessResponse(200, 'Successfully saved Item Review', 'item_review_store_success', $data);
 
         }
@@ -74,16 +74,16 @@ class ItemReviewController extends Controller
      *
      * @param int $itemId
      * @param int $reviewId
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function show($itemId, $reviewId)
     {
-        $item = Item::find($itemId)->with('reviews');
+        $itemReview = ItemReview::query()->where('item_id', $itemId)->where('id', $reviewId)->first();
 
-        if ($item) {
+        if ($itemReview) {
 
-            $data = new ItemReviewCollectionResource($item);
-            return $this->createSuccessResponse(200, 'Successfully retrieved Item Reviews', 'item_reviews_index_success', $data);
+            $data = new ItemReviewResource($itemReview);
+            return $this->createSuccessResponse(200, 'Successfully retrieved Item Review', 'item_reviews_show_success', $data);
 
         }
 
@@ -95,15 +95,15 @@ class ItemReviewController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param int $itemId
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function update(Request $request, $itemId)
+    public function update(Request $request, $itemId, $reviewId)
     {
         $data = $request->all();
 
         $rules = [
-            'content' => 'required|string|max:2000',
-            'stars' => 'required|numeric',
+            'content' => 'sometimes|string|max:2000',
+            'stars' => 'sometimes|numeric',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -112,16 +112,24 @@ class ItemReviewController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $item = Item::find($itemId)->with('reviews');
+        $itemReview = ItemReview::query()->where('item_id', $itemId)->find($reviewId);
 
-        if ($item) {
+        if ($itemReview) {
 
-            $item->content = $data['content'];
-            $item->stars = $data['stars'];
+            // @todo: Check if better way of updating model in Laravel
+            // What happens is request is empty?
 
-            if ($item->save()) {
+            if (isset($data['content'])) {
+                $itemReview->content = $data['content'];
+            }
 
-                $data = new ItemReviewCollectionResource($item);
+            if (isset($data['stars'])) {
+                $itemReview->stars = $data['stars'];
+            }
+
+            if ($itemReview->save()) {
+
+                $data = new ItemReviewResource($itemReview);
                 return $this->createSuccessResponse(200, 'Successfully updated Item Review', 'item_review_update_success', $data);
 
             }
@@ -137,15 +145,15 @@ class ItemReviewController extends Controller
      * Remove the specified resource from storage.
      *
      * @param int $itemId
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy($itemId)
+    public function destroy($itemId, $reviewId)
     {
-        $item = Item::find($itemId)->with('reviews');
+        $itemReview = ItemReview::query()->where('item_id', $itemId)->find($reviewId);
 
-        if ($item) {
+        if ($itemReview) {
 
-            if ($item->delete()) {
+            if ($itemReview->delete()) {
                 return $this->createSuccessResponse(200, 'Successfully deleted Item Review', 'item_review_destroy_success');
             }
 

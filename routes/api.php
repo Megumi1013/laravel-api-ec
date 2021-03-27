@@ -16,11 +16,6 @@ use App\Http\Controllers\ItemController;
 |
 */
 
-
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::apiResources([
     'items' => ItemController::class,
     'items.reviews' => ItemReviewController::class,

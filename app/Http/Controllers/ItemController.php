@@ -96,7 +96,7 @@ class ItemController extends Controller
         if ($item) {
 
             $data = new ItemResource($item);
-            return $this->createSuccessResponse(200, 'Successfully retrieved Items', 'items_index_success', $data);
+            return $this->createSuccessResponse(200, 'Successfully retrieved Items', 'items_show_success', $data);
 
         }
 
@@ -115,10 +115,10 @@ class ItemController extends Controller
         $data = $request->all();
 
         $rules = [
-            'name' => 'required|string|max:255',
-            'description' => 'required|string|max:2000',
-            'is_disabled' => 'required|boolean',
-            'price' => 'required|numeric',
+            'name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string|max:2000',
+            'is_disabled' => 'sometimes|boolean',
+            'price' => 'sometimes|numeric',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -131,10 +131,23 @@ class ItemController extends Controller
 
         if ($item) {
 
-            $item->name = $data['name'];
-            $item->description = $data['description'];
-            $item->price = $data['price'];
-            $item->is_disabled = $data['is_disabled'];
+            // @todo What if request is empty?
+
+            if (isset($data['name'])) {
+                $item->name = $data['name'];
+            }
+
+            if (isset($data['description'])) {
+                $item->description = $data['description'];
+            }
+
+            if (isset($data['price'])) {
+                $item->price = $data['price'];
+            }
+
+            if (isset($data['is_disabled'])) {
+                $item->is_disabled = $data['is_disabled'];
+            }
 
             if ($item->save()) {
 
@@ -143,7 +156,7 @@ class ItemController extends Controller
 
             }
 
-            return $this->createErrorResponse(500, 'Item could not be saved', 'item_store_failure');
+            return $this->createErrorResponse(500, 'Item could not be updated', 'item_update_failure');
 
         }
 
@@ -162,7 +175,21 @@ class ItemController extends Controller
 
         if ($item) {
 
-            if ($item->delete()) {
+            $itemReviews = $item->reviews;
+
+            $itemReviewsToDelete = count($itemReviews);
+            $itemReviewsDeleted = 0;
+
+            // Delete reviews
+            foreach ($item->reviews as $itemReview) {
+
+                if ($itemReview->delete()) {
+                    $itemReviewsDeleted++;
+                }
+
+            }
+
+            if ($itemReviewsToDelete === $itemReviewsDeleted && $item->delete()) {
                 return $this->createSuccessResponse(200, 'Successfully deleted Item', 'item_destroy_success');
             }
 
