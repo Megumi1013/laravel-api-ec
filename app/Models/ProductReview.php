@@ -5,21 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Item extends Model
+class ProductReview extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'name',
-        'description',
-        'price',
-        'is_disabled'
+        'content',
+        'stars',
     ];
 
     // Relationships
 
-    public function reviews()
+    public function item()
     {
-        return $this->hasMany(ItemReview::class);
+        return $this->belongsTo(Product::class);
     }
 }

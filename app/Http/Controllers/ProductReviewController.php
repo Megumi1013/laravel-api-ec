@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ItemResource;
-use App\Http\Resources\ItemReviewCollectionResource;
-use App\Http\Resources\ItemReviewResource;
-use App\Models\Item;
-use App\Models\ItemReview;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductReviewCollectionResource;
+use App\Http\Resources\ProductReviewResource;
+use App\Models\Product;
+use App\Models\ProductReview;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ItemReviewController extends Controller
+class ProductReviewController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,11 +20,11 @@ class ItemReviewController extends Controller
      */
     public function index($itemId)
     {
-        $item = Item::query()->find($itemId);
+        $item = Product::query()->find($itemId);
 
         if ($item) {
 
-            $data = new ItemReviewCollectionResource($item->reviews);
+            $data = new ProductReviewCollectionResource($item->reviews);
             return $this->createSuccessResponse(200, 'Successfully retrieved Item Reviews', 'items_reviews_index_success', $data);
 
         }
@@ -53,7 +53,7 @@ class ItemReviewController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $itemReview = new ItemReview();
+        $itemReview = new ProductReview();
 
         $itemReview->content = $data['content'];
         $itemReview->stars = $data['stars'];
@@ -61,7 +61,7 @@ class ItemReviewController extends Controller
 
         if ($itemReview->save()) {
 
-            $data = new ItemReviewResource($itemReview);
+            $data = new ProductReviewResource($itemReview);
             return $this->createSuccessResponse(200, 'Successfully saved Item Review', 'item_review_store_success', $data);
 
         }
@@ -78,11 +78,11 @@ class ItemReviewController extends Controller
      */
     public function show($itemId, $reviewId)
     {
-        $itemReview = ItemReview::query()->where('item_id', $itemId)->where('id', $reviewId)->first();
+        $itemReview = ProductReview::query()->where('item_id', $itemId)->where('id', $reviewId)->first();
 
         if ($itemReview) {
 
-            $data = new ItemReviewResource($itemReview);
+            $data = new ProductReviewResource($itemReview);
             return $this->createSuccessResponse(200, 'Successfully retrieved Item Review', 'item_reviews_show_success', $data);
 
         }
@@ -112,7 +112,7 @@ class ItemReviewController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $itemReview = ItemReview::query()->where('item_id', $itemId)->find($reviewId);
+        $itemReview = ProductReview::query()->where('item_id', $itemId)->find($reviewId);
 
         if ($itemReview) {
 
@@ -129,7 +129,7 @@ class ItemReviewController extends Controller
 
             if ($itemReview->save()) {
 
-                $data = new ItemReviewResource($itemReview);
+                $data = new ProductReviewResource($itemReview);
                 return $this->createSuccessResponse(200, 'Successfully updated Item Review', 'item_review_update_success', $data);
 
             }
@@ -149,7 +149,7 @@ class ItemReviewController extends Controller
      */
     public function destroy($itemId, $reviewId)
     {
-        $itemReview = ItemReview::query()->where('item_id', $itemId)->find($reviewId);
+        $itemReview = ProductReview::query()->where('item_id', $itemId)->find($reviewId);
 
         if ($itemReview) {
 

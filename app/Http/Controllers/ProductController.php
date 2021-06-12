@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ItemCollectionResource;
-use App\Http\Resources\ItemResource;
-use App\Http\Resources\ItemReviewCollectionResource;
-use App\Models\Item;
+use App\Http\Resources\ProductCollectionResource;
+use App\Http\Resources\ProductResource;
+use App\Http\Resources\ProductReviewCollectionResource;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class ItemController extends Controller
+class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -23,9 +23,9 @@ class ItemController extends Controller
 
         $rules = [
             'page' => 'required|numeric',
-            'perPage' => 'required|numeric',
-            'orderBy' => 'required|string',
-            'orderDirection' => 'required|in:asc,desc',
+            'per_page' => 'required|numeric',
+            'order_by' => 'required|string',
+            'order_direction' => 'required|in:asc,desc',
         ];
 
         $validator = Validator::make($data, $rules);
@@ -34,11 +34,11 @@ class ItemController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $items = Item::query()->orderBy($data['orderBy'], $data['orderDirection']);
+        $items = Product::query()->orderBy($data['order_by'], $data['order_direction']);
 
         // Some other conditional queries
 
-        $data = new ItemCollectionResource($items->paginate($data['perPage']));
+        $data = new ProductCollectionResource($items->paginate($data['per_page']));
 
         return $this->createSuccessResponse(200, 'Successfully retrieved Items', 'items_index_success', $data);
     }
@@ -66,7 +66,7 @@ class ItemController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $item = new Item;
+        $item = new Product;
 
         $item->name = $data['name'];
         $item->description = $data['description'];
@@ -75,7 +75,7 @@ class ItemController extends Controller
 
         if ($item->save()) {
 
-            $data = new ItemResource($item);
+            $data = new ProductResource($item);
             return $this->createSuccessResponse(200, 'Successfully saved Item', 'item_store_success', $data);
 
         }
@@ -91,11 +91,11 @@ class ItemController extends Controller
      */
     public function show($id)
     {
-        $item = Item::find($id);
+        $item = Product::find($id);
 
         if ($item) {
 
-            $data = new ItemResource($item);
+            $data = new ProductResource($item);
             return $this->createSuccessResponse(200, 'Successfully retrieved Items', 'items_show_success', $data);
 
         }
@@ -127,7 +127,7 @@ class ItemController extends Controller
             return $this->createErrorResponse(400, 'The request data was invalid', 'request_data_invalid', $validator->errors());
         }
 
-        $item = Item::find($id);
+        $item = Product::find($id);
 
         if ($item) {
 
@@ -151,7 +151,7 @@ class ItemController extends Controller
 
             if ($item->save()) {
 
-                $data = new ItemResource($item);
+                $data = new ProductResource($item);
                 return $this->createSuccessResponse(200, 'Successfully updated Item', 'item_update_success', $data);
 
             }
@@ -171,7 +171,7 @@ class ItemController extends Controller
      */
     public function destroy($id)
     {
-        $item = Item::find($id);
+        $item = Product::find($id);
 
         if ($item) {
 

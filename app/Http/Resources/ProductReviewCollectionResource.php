@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ItemReviewCollectionResource extends ResourceCollection
+class ProductReviewCollectionResource extends ResourceCollection
 {
     private $pagination;
 
@@ -18,7 +18,7 @@ class ItemReviewCollectionResource extends ResourceCollection
                 'currentItemsTotal' => (int) $resource->count(),
                 'itemsTotal' => (int) $resource->total(),
                 'pagesTotal' => (int) $resource->lastPage(),
-                'perPage' => (int) $resource->perPage(),
+                'per_page' => (int) $resource->perPage(),
                 'from' => (int) $resource->firstItem(),
                 'to' => (int) $resource->lastItem(),
             ];
@@ -38,8 +38,8 @@ class ItemReviewCollectionResource extends ResourceCollection
     public function toArray($request)
     {
         $meta = $this->pagination;
-        $meta['orderBy'] =  ($request->orderBy ?: 'created_at');
-        $meta['orderDirection'] = ($request->orderDirection ?: 'desc');
+        $meta['order_by'] =  ($request->order_by ?: 'created_at');
+        $meta['order_direction'] = ($request->order_direction ?: 'desc');
 
         return [
             'items' => $this->collection->transform(function ($data) {
