@@ -4,21 +4,21 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class ItemCollectionResource extends ResourceCollection
+class ProductCollectionResource extends ResourceCollection
 {
     private $pagination;
 
     public function __construct($resource)
     {
-        if (method_exists($resource, 'previousPageUrl')) {
+        if (method_exists($resource, 'previous_page_url')) {
             $this->pagination = [
-                'prevPage' => (is_null($resource->previousPageUrl()) ? 0 : $resource->currentPage() - 1),
-                'currentPage' => (int) $resource->currentPage(),
-                'nextPage' => (is_null($resource->nextPageUrl()) ? 0 : $resource->currentPage() + 1),
-                'currentItemsTotal' => (int) $resource->count(),
-                'itemsTotal' => (int) $resource->total(),
-                'pagesTotal' => (int) $resource->lastPage(),
-                'perPage' => (int) $resource->perPage(),
+                'prev_page' => (is_null($resource->previousPageUrl()) ? 0 : $resource->currentPage() - 1),
+                'current_page' => (int) $resource->currentPage(),
+                'next_page' => (is_null($resource->nextPageUrl()) ? 0 : $resource->currentPage() + 1),
+                'current_items_total' => (int) $resource->count(),
+                'items_total' => (int) $resource->total(),
+                'pages_total' => (int) $resource->lastPage(),
+                'per_page' => (int) $resource->perPage(),
                 'from' => (int) $resource->firstItem(),
                 'to' => (int) $resource->lastItem(),
             ];
@@ -38,8 +38,8 @@ class ItemCollectionResource extends ResourceCollection
     public function toArray($request)
     {
         $meta = $this->pagination;
-        $meta['orderBy'] =  ($request->orderBy ?: 'created_at');
-        $meta['orderDirection'] = ($request->orderDirection ?: 'desc');
+        $meta['order_by'] =  ($request->order_by ?: 'created_at');
+        $meta['order_direction'] = ($request->order_direction ?: 'desc');
 
         return [
             'items' => $this->collection->transform(function ($data) {
@@ -48,7 +48,7 @@ class ItemCollectionResource extends ResourceCollection
                     'name' => $data->name,
                     'description' => $data->description,
                     'price' => $data->price,
-                    'isDisabled' => $data->isDisabled,
+                    'is_disabled' => $data->isDisabled,
                     'blah' => 'foo',
                      'created_at' => $data->created_at ? $data->created_at->toDateTimeString() : null,
                      'updated_at' => $data->updated_at ? $data->updated_at->toDateTimeString() : null,
