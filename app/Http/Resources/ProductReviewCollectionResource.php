@@ -10,14 +10,14 @@ class ProductReviewCollectionResource extends ResourceCollection
 
     public function __construct($resource)
     {
-        if (method_exists($resource, 'previousPageUrl')) {
+        if (method_exists($resource, 'previous_page_url')) {
             $this->pagination = [
-                'prevPage' => (is_null($resource->previousPageUrl()) ? 0 : $resource->currentPage() - 1),
-                'currentPage' => (int) $resource->currentPage(),
-                'nextPage' => (is_null($resource->nextPageUrl()) ? 0 : $resource->currentPage() + 1),
-                'currentItemsTotal' => (int) $resource->count(),
-                'itemsTotal' => (int) $resource->total(),
-                'pagesTotal' => (int) $resource->lastPage(),
+                'prev_page' => (is_null($resource->previousPageUrl()) ? 0 : $resource->currentPage() - 1),
+                'current_page' => (int) $resource->currentPage(),
+                'next_page' => (is_null($resource->nextPageUrl()) ? 0 : $resource->currentPage() + 1),
+                'current_items_total' => (int) $resource->count(),
+                'items_total' => (int) $resource->total(),
+                'pages_total' => (int) $resource->lastPage(),
                 'per_page' => (int) $resource->perPage(),
                 'from' => (int) $resource->firstItem(),
                 'to' => (int) $resource->lastItem(),
@@ -42,7 +42,7 @@ class ProductReviewCollectionResource extends ResourceCollection
         $meta['order_direction'] = ($request->order_direction ?: 'desc');
 
         return [
-            'items' => $this->collection->transform(function ($data) {
+            'products' => $this->collection->transform(function ($data) {
                 return [
                     'id' => $data->id,
                     'content' => $data->content,
