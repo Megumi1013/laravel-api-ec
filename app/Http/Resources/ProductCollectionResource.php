@@ -42,7 +42,7 @@ class ProductCollectionResource extends ResourceCollection
         $meta['order_direction'] = ($request->order_direction ?: 'desc');
 
         return [
-            'items' => $this->collection->transform(function ($data) {
+            'products' => $this->collection->transform(function ($data) {
                 return [
                     'id' => $data->id,
                     'name' => $data->name,
