@@ -16,7 +16,7 @@ class ProductReview extends Model
 
     // Relationships
 
-    public function item()
+    public function product()
     {
         return $this->belongsTo(Product::class);
     }
