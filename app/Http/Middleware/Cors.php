@@ -19,8 +19,8 @@ class Cors
         $paths = explode('/', \Request::getPathInfo());
         if ($paths[1] === 'api') {
             return $next($request)
-                ->header('Access-Control-Allow-Origin', 'https://vue-ec-od8iw.ondigitalocean.app/')
-                ->header('Access-Control-Allow-Methods', 'GET, POST')
+                ->header('Access-Control-Allow-Origin', 'https://vue-ec-od8iw.ondigitalocean.app')
+                ->header('Access-Control-Allow-Methods', 'GET, POST, UPDATE, DELETE')
                 ->header('Access-Control-Allow-Headers', 'Accept, X-Requested-With, Origin, Content-Type');
         }
         return $next($request);
