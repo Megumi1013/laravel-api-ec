@@ -1,0 +1,12 @@
+name: laravel-api-ec
+recipe: laravel
+config:
+  php: '8.0'
+  composer_version: '2.0.13'
+  via: nginx
+  database: mysql:8.0
+  cache: redis
+  webroot: public
+services:
+  database:
+    portforward: 3307
