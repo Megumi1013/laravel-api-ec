@@ -1,1 +1,0 @@
-{"nfs":{"vagrant-root":{"id":"vagrant-root","mount_options":["rw","tcp","nolock","noacl","async"],"type":"nfs","nfs_udp":false,"guestpath":"/webdev","hostpath":"/System/Volumes/Data/Users/miyatanimegumi/Documents/webdev/laravel-api-ec","disabled":false,"__vagrantfile":true,"map_uid":501,"map_gid":20,"nfs_version":3,"uuid":"1604167157"}}}
